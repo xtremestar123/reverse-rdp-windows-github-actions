@@ -22,5 +22,3 @@ jobs:
     - run: Set-LocalUser -Name "xtremestar123" -Password (ConvertTo-SecureString -AsPlainText "xtreme12345" -Force)
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
-      
-    
