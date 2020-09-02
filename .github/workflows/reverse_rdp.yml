@@ -1,8 +1,8 @@
 name: Reverse Rdp Windows
 
 on:
-    watch:
-        types: [started]
+  watch:
+    types: [started]
 
 jobs:
   build:
