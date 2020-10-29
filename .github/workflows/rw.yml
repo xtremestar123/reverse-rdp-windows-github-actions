@@ -1,0 +1,37 @@
+name: Reverse Rdp Windows
+
+on:
+  watch:
+    types: [started]
+
+jobs:
+  rdp:
+    runs-on: windows-latest
+
+    steps:
+    - name: Download Ngrok
+      run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+      
+    - name: Extract Ngrok
+      run: Expand-Archive ngrok.zip
+      
+    - name: Auth
+      run: .\ngrok\ngrok.exe authtoken ${{secrets.ngrokauthtoken}}
+      
+    - name: Enable TS
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+      
+    - name: Enable NetFirewallRule
+      run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+      
+    - name: Enable UserAuthentication
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+      
+    - name: Set LocalUser
+      run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+      
+    - name: Create Tunnel
+      run: configure.sh
+      
+    - name: Get Tunnel
+      run: curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url
