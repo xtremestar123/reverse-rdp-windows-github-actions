@@ -30,5 +30,8 @@ jobs:
     - name: Set LocalUser
       run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
       
+    - name: Open Chrome
+      run: start chrome www.cutedoge.cf
+      
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
